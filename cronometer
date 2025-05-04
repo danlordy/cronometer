@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nav y Fondo Degradado Dinámico</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		/* Estilos básicos para el cuerpo y el HTML */
+		body,
+		html {
+			margin: 0;
+			padding: 0;
+			font-family: 'Inter', sans-serif;
+			/* Altura mínima para que el efecto de fondo sea visible */
+			min-height: 100vh;
+			/* El fondo inicial es un degradado */
+			background: linear-gradient(0deg, #ff0000, #0000ff);
+			/* Transición suave para el cambio de fondo (opcional, puede hacer el movimiento menos brusco) */
+			transition: background 0s ease;
+			/* Quitamos la transición para que el movimiento sea inmediato */
+			overflow: hidden;
+			/* Evita barras de desplazamiento si el contenido es más pequeño que la ventana */
+		}
+
+		/* Estilos para la barra de navegación */
+		nav {
+			background-color: rgba(0, 0, 0, 0.7);
+			/* Fondo semi-transparente oscuro */
+			color: white;
+			padding: 10px 20px;
+			display: flex;
+			/* Justify-content: flex-start; /* Alinea los elementos a la izquierda */
+			justify-content: center;
+			/* Centra horizontalmente el título */
+			align-items: center;
+			/* Centra verticalmente los elementos */
+			position: fixed;
+			/* Fija la barra de navegación en la parte superior */
+			width: 100%;
+			/* Ancho completo */
+			top: 0;
+			/* Pegado a la parte superior */
+			left: 0;
+			/* Pegado a la izquierda */
+			z-index: 1000;
+			/* Asegura que esté por encima de otros elementos */
+			box-sizing: border-box;
+			/* Incluye padding en el ancho */
+		}
+
+		.nav-title {
+			font-size: 1.5em;
+			font-weight: bold;
+			/* Si justify-content es space-between, puedes añadir margin-right para separar del borde */
+			/* margin-right: auto; */
+		}
+
+		/* Estilos para el contenido principal (debajo del nav fijo) */
+		.content {
+			padding-top: 60px;
+			/* Espacio para que el contenido no quede oculto bajo el nav */
+			text-align: center;
+			color: white;
+			/* Color de texto para el contenido */
+			/* Puedes añadir más estilos para centrar o dar formato a tu contenido aquí */
+		}
+
+		/* Estilo básico para el botón de ejemplo */
+		.cronometer-button {
+			display: inline-block;
+			padding: 10px 20px;
+			background-color: rgba(255, 255, 255, 0.2);
+			color: white;
+			text-decoration: none;
+			border: 1px solid white;
+			border-radius: 5px;
+			margin-top: 20px;
+			transition: background-color 0.3s ease;
+		}
+
+		.cronometer-button:hover {
+			background-color: rgba(255, 255, 255, 0.4);
+		}
+	</style>
+</head>
+
+<body>
+
+	<nav>
+		<div class="nav-title">Mi Página</div>
+	</nav>
+
+	<div class="content">
+		<h1>¡Mueve el ratón para cambiar el fondo!</h1>
+		<p>Este es el contenido principal de la página.</p>
+		<div class="button-container">
+			<a href="/cronometer.html" class="cronometer-button">Ir al Cronómetro</a>
+		</div>
+	</div>
+
+	<script>
+		// Obtener referencia al cuerpo del documento
+		const body = document.body;
+		// Se ha eliminado la referencia al elemento del contador
+
+		// Añadir un listener para el evento 'mousemove' en el cuerpo
+		body.addEventListener('mousemove', (event) => {
+			// Obtener la posición del ratón
+			const mouseX = event.clientX;
+			const mouseY = event.clientY;
+
+			// Obtener las dimensiones de la ventana
+			const windowWidth = window.innerWidth;
+			const windowHeight = window.innerHeight;
+
+			// Calcular la posición del ratón como un porcentaje
+			const percentX = (mouseX / windowWidth); // 0 a 1
+			const percentY = (mouseY / windowHeight); // 0 a 1
+
+			// Calcular el ángulo del degradado basado en la posición del ratón
+			// Un ángulo de 0deg es de abajo hacia arriba, 90deg es de izquierda a derecha
+			// Vamos a hacer que el ángulo varíe principalmente con la posición X
+			const angle = percentX * 360; // Ángulo de 0 a 360 grados basado en la posición horizontal
+
+			// Actualizar el fondo del cuerpo con el nuevo degradado
+			body.style.background = linear-gradient(${angle}deg, #ff0000, #0000ff);
+
+			// Se ha eliminado el código para incrementar y actualizar el contador
+		});
+
+		// Se ha eliminado el listener 'mouseleave' si solo se usaba para el contador
+		// Si necesitas este listener para otra cosa, puedes mantenerlo y eliminar solo la lógica del contador
+	</script>
+
+</body>
+
+</html>
