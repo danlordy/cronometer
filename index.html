@@ -37,7 +37,12 @@
         <div id="timerSection" class="hidden">
             <h2 class="text-2xl mb-4">Bienvenido, <span id="loggedInUsername"></span>!</h2>
             <div class="text-5xl font-mono mb-4" id="timeDisplay">00:00:00</div>
-            <div class="text-2xl mb-6">Costo: <span id="costDisplay">0.00</span> Pesos</div>
+            <div class="text-2xl mb-6">Costo: <span id="costDisplay">$0.00</span></div>
+
+            <div class="mb-4">
+                <label for="taskName" class="block text-sm font-medium mb-1 text-left">Nombre de Tarea/Proyecto (Opcional):</label>
+                <input type="text" id="taskName" placeholder="Ej: Desarrollo de nueva función" class="w-full">
+            </div>
 
             <div>
                 <button id="startButton" class="button button-start">Inicio</button>
@@ -53,11 +58,18 @@
         <div id="configSection" class="hidden">
             <h2 class="text-2xl mb-4">Configuración</h2>
             <div class="mb-4">
-                <label for="pricePerHour" class="block text-sm font-medium mb-1 text-left">Precio por Hora (en
-                    Pesos):</label>
+                <label for="pricePerHour" class="block text-sm font-medium mb-1 text-left">Precio por Hora:</label>
                 <input type="number" id="pricePerHour" value="100" min="0">
             </div>
+            <div class="mb-4">
+                <label for="currencySymbol" class="block text-sm font-medium mb-1 text-left">Símbolo de Moneda:</label>
+                <input type="text" id="currencySymbol" value="$" maxlength="5"> 
+            </div>
             <button id="saveConfigButton" class="button button-start w-full">Guardar Configuración</button>
+            
+            <button id="clearHistoryButton" class="button button-stop w-full mt-4">Limpiar Historial de Sesiones (Usuario Actual)</button>
+            <button id="resetAppButton" class="button button-stop w-full mt-2">Reiniciar Aplicación (Eliminar Todos los Datos)</button>
+            
             <button id="backButton" class="button button-secondary w-full mt-2">Volver al Cronómetro</button>
         </div>
 
@@ -66,6 +78,7 @@
             <div id="historyList" class="history-list">
                 <p class="text-gray-400">No hay historial disponible.</p>
             </div>
+            <button id="exportCsvButton" class="button button-start w-full mt-2">Exportar Historial a CSV</button>
             <button id="backFromHistoryButton" class="button button-secondary w-full mt-4">Volver al Cronómetro</button>
         </div>
     </div>

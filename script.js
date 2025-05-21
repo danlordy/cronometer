@@ -29,11 +29,17 @@ const showHistoryButton = document.getElementById('showHistoryButton');
 const logoutButton = document.getElementById('logoutButton');
 
 const pricePerHourInput = document.getElementById('pricePerHour');
+const currencySymbolInput = document.getElementById('currencySymbol'); // Added
+const taskNameInput = document.getElementById('taskName'); // Added
 const saveConfigButton = document.getElementById('saveConfigButton');
 const backButton = document.getElementById('backButton');
 
 const historyListDiv = document.getElementById('historyList');
 const backFromHistoryButton = document.getElementById('backFromHistoryButton');
+const exportCsvButton = document.getElementById('exportCsvButton'); // Added
+const clearHistoryButton = document.getElementById('clearHistoryButton'); // Added
+const resetAppButton = document.getElementById('resetAppButton'); // Added
+
 
 // --- Timer Variables ---
 let timerInterval;
@@ -99,8 +105,11 @@ function loadAppData() {
             user.currentTimerState.elapsedTime = Number(user.currentTimerState.elapsedTime) || 0;
 
             // Ensure user has settings
-            user.settings = user.settings || { pricePerHour: 100 };
+            user.settings = user.settings || { pricePerHour: 100, currencySymbol: '$' };
             user.settings.pricePerHour = Number(user.settings.pricePerHour) || 100;
+            if (typeof user.settings.currencySymbol === 'undefined') {
+                user.settings.currencySymbol = '$'; // Ensure default for older data
+            }
         });
     }
 }
@@ -165,7 +174,8 @@ async function addUser(username, password) {
         username: username,
         password: hashedPassword, // Store hashed password
         settings: {
-            pricePerHour: 100 // Default price
+            pricePerHour: 100, // Default price
+            currencySymbol: '$' // Default currency symbol
         },
         currentTimerState: {
             elapsedTime: 0,
@@ -276,9 +286,15 @@ function showConfig() {
     const currentUser = getCurrentUser();
     if (currentUser && currentUser.settings) {
         pricePerHourInput.value = currentUser.settings.pricePerHour;
+        if (currentUser.settings.currencySymbol) {
+            currencySymbolInput.value = currentUser.settings.currencySymbol;
+        } else {
+            currencySymbolInput.value = '$'; // Default if not set for some reason
+        }
     } else {
         // Set default if settings are missing
         pricePerHourInput.value = 100;
+        currencySymbolInput.value = '$';
     }
 }
 
@@ -325,7 +341,12 @@ function handleStopTimerActions() {
     currentSessionStartTime = null;
 
     updateTimeDisplay(); // Update display to 00:00:00
-    costDisplay.textContent = '0.00'; // Reset cost display
+    // costDisplay.textContent = '0.00'; // Reset cost display - updateCostDisplay will handle this with symbol
+    updateCostDisplay(); // Ensure cost display is updated with symbol and reset value
+
+    if (taskNameInput) { // Clear task name input
+        taskNameInput.value = '';
+    }
 
     startButton.disabled = false;
     pauseButton.disabled = true;
@@ -351,7 +372,12 @@ function updateTimeDisplay() {
 function updateCostDisplay() {
     const elapsedMinutes = elapsedTime / 60000;
     const cost = elapsedMinutes * pricePerMinute;
-    costDisplay.textContent = cost.toFixed(2);
+    const currentUser = getCurrentUser();
+    let symbol = '$'; // Default symbol
+    if (currentUser && currentUser.settings && currentUser.settings.currencySymbol) {
+        symbol = currentUser.settings.currencySymbol;
+    }
+    costDisplay.textContent = `${symbol}${cost.toFixed(2)}`; // Prepend symbol
 }
 
 function calculatePricePerMinute() {
@@ -395,12 +421,16 @@ function addSessionToHistory() {
         // Recalculate cost based on the duration of this specific session
         const sessionCost = (sessionDuration / 60000) * pricePerMinute;
 
+        const sessionCost = (sessionDuration / 60000) * pricePerMinute;
+        const taskName = taskNameInput.value.trim();
+
         const newSession = {
             id: Date.now() + Math.random().toString(16).slice(2), // Simple unique ID
             startTime: currentSessionStartTime, // Date object
             endTime: sessionEndTime, // Date object
             duration: sessionDuration, // milliseconds
-            cost: sessionCost
+            cost: sessionCost,
+            taskName: taskName || "Sin Título" // Added taskName
         };
 
         // Ensure history array exists
@@ -436,11 +466,21 @@ function loadHistory() {
 
             const historyItem = document.createElement('div');
             historyItem.classList.add('history-item');
+            const currentUser = getCurrentUser(); 
+            let symbol = '$';
+            if (currentUser && currentUser.settings && currentUser.settings.currencySymbol) {
+                symbol = currentUser.settings.currencySymbol;
+            }
+            const costStr = Number(session.cost).toFixed(2);
+
+            const historyItem = document.createElement('div');
+            historyItem.classList.add('history-item');
             historyItem.innerHTML = `
                         <p><strong>Inicio:</strong> ${startTimeStr}</p>
                         <p><strong>Fin:</strong> ${endTimeStr}</p>
                         <p><strong>Duración:</strong> ${durationMinutes} minutos</p>
-                        <p><strong>Costo:</strong> ${costStr} Pesos</p>
+                            <p><strong>Tarea:</strong> ${session.taskName || 'Sin Título'}</p>
+                        <p><strong>Costo:</strong> ${symbol}${costStr}</p>
                     `;
             historyListDiv.appendChild(historyItem);
         });
@@ -587,18 +627,30 @@ configButton.addEventListener('click', () => {
 saveConfigButton.addEventListener('click', () => {
     const currentUser = getCurrentUser();
     const newPrice = parseFloat(pricePerHourInput.value);
+    const newCurrencySymbol = currencySymbolInput.value.trim();
+
     if (currentUser && !isNaN(newPrice) && newPrice >= 0) {
         currentUser.settings.pricePerHour = newPrice;
+        
+        if (newCurrencySymbol) { 
+            currentUser.settings.currencySymbol = newCurrencySymbol;
+        } else {
+            currentUser.settings.currencySymbol = '$'; // Default if empty
+        }
+
         saveAppData(); // Save the updated settings
         calculatePricePerMinute(); // Recalculate price after saving
+        updateCostDisplay(); // Update cost display immediately with new symbol if needed
         showTimer(); // Go back to timer after saving
     } else {
         alert("Por favor, ingresa un precio por hora válido (un número mayor o igual a 0).");
         // Reset input to current saved value if input is invalid
         if (currentUser && currentUser.settings) {
             pricePerHourInput.value = currentUser.settings.pricePerHour;
+            currencySymbolInput.value = currentUser.settings.currencySymbol || '$';
         } else {
             pricePerHourInput.value = 100; // Default
+            currencySymbolInput.value = '$'; // Default
         }
     }
 });
@@ -634,3 +686,123 @@ if (appData.currentUser) {
 window.addEventListener('pagehide', saveCurrentUserState);
 // Fallback for older browsers
 window.addEventListener('beforeunload', saveCurrentUserState);
+
+// --- CSV Export Functions ---
+
+function escapeCsvCell(cellData) {
+    if (cellData == null) { // Handles null or undefined
+        return '';
+    }
+    const stringData = String(cellData);
+    if (stringData.includes(',') || stringData.includes('"') || stringData.includes('\n')) {
+        return `"${stringData.replace(/"/g, '""')}"`;
+    }
+    return stringData;
+}
+
+function exportHistoryToCSV() {
+    const currentUser = getCurrentUser();
+    if (!currentUser || !currentUser.history || currentUser.history.length === 0) {
+        alert("No hay historial para exportar.");
+        return;
+    }
+
+    const headers = ["Fecha Inicio", "Hora Inicio", "Fecha Fin", "Hora Fin", "Duración (HH:MM:SS)", "Duración (Minutos)", "Tarea/Proyecto", "Costo", "Moneda"];
+    
+    let symbol = '$';
+    if (currentUser.settings && currentUser.settings.currencySymbol) {
+        symbol = currentUser.settings.currencySymbol;
+    }
+
+    const csvRows = [headers.join(',')]; // Add headers as the first row
+
+    currentUser.history.forEach(session => {
+        const startDate = session.startTime instanceof Date ? session.startTime.toLocaleDateString('sv-SE') : 'N/A'; // YYYY-MM-DD
+        const startTimeStr = session.startTime instanceof Date ? session.startTime.toLocaleTimeString('en-GB') : 'N/A'; // HH:MM:SS
+        const endDate = session.endTime instanceof Date ? session.endTime.toLocaleDateString('sv-SE') : 'N/A';
+        const endTimeStr = session.endTime instanceof Date ? session.endTime.toLocaleTimeString('en-GB') : 'N/A';
+        
+        const totalSessionSeconds = Math.floor((Number(session.duration) || 0) / 1000);
+        const sHours = Math.floor(totalSessionSeconds / 3600);
+        const sMinutes = Math.floor((totalSessionSeconds % 3600) / 60);
+        const sSeconds = totalSessionSeconds % 60;
+        const durationHHMMSS = `${String(sHours).padStart(2, '0')}:${String(sMinutes).padStart(2, '0')}:${String(sSeconds).padStart(2, '0')}`;
+        
+        const durationMinutes = (Number(session.duration) / 60000).toFixed(2);
+        const taskName = session.taskName || "Sin Título";
+        const cost = Number(session.cost).toFixed(2);
+
+        const row = [
+            startDate,
+            startTimeStr,
+            endDate,
+            endTimeStr,
+            durationHHMMSS,
+            durationMinutes,
+            taskName,
+            cost,
+            symbol
+        ].map(escapeCsvCell);
+        csvRows.push(row.join(','));
+    });
+
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+    const link = document.createElement("a");
+    if (link.download !== undefined) { // Feature detection
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "cronometer_history.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } else {
+        alert("La exportación CSV no es compatible con este navegador.");
+    }
+}
+
+if(exportCsvButton) { // Ensure button exists before adding listener
+    exportCsvButton.addEventListener('click', exportHistoryToCSV);
+}
+
+// --- Data Clearing Functions ---
+
+function clearCurrentUserHistory() {
+    if (confirm("¿Estás seguro de que quieres limpiar TODO tu historial de sesiones? Esta acción no se puede deshacer.")) {
+        const currentUser = getCurrentUser();
+        if (currentUser && currentUser.history) {
+            currentUser.history = [];
+            saveAppData();
+            alert("Tu historial de sesiones ha sido limpiado.");
+            // Reload the history view if currently visible
+            if (historySection && !historySection.classList.contains('hidden')) {
+                loadHistory();
+            }
+        } else {
+            alert("No se encontró historial para limpiar o no hay un usuario activo.");
+        }
+    }
+}
+
+function resetApplication() {
+    if (confirm("¡ADVERTENCIA! ¿Estás ABSOLUTAMENTE seguro de que quieres reiniciar la aplicación? TODOS los usuarios y datos serán eliminados permanentemente. Esta acción no se puede deshacer.")) {
+        localStorage.removeItem(STORAGE_KEY_APP_DATA);
+        appData = {
+            users: [],
+            currentUser: null
+        };
+        alert("La aplicación ha sido reiniciada. Todos los datos han sido eliminados.");
+        window.location.reload(); // Reload the page to reset state and UI
+    }
+}
+
+if (clearHistoryButton) {
+    clearHistoryButton.addEventListener('click', clearCurrentUserHistory);
+}
+
+if (resetAppButton) {
+    resetAppButton.addEventListener('click', resetApplication);
+}
