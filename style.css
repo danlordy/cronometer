@@ -1,0 +1,128 @@
+/* Custom gradient background */
+body {
+    background: linear-gradient(to right, #ef4444, #3b82f6);
+    /* Red to Blue gradient */
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: white;
+    /* White text for better contrast */
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.1);
+    /* Slightly transparent white background */
+    backdrop-filter: blur(10px);
+    /* Blur effect */
+    border-radius: 1rem;
+    /* Rounded corners */
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    /* Shadow for depth */
+    width: 90%;
+    /* Make container responsive */
+    max-width: 500px;
+    /* Max width for larger screens */
+}
+
+.button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0.5rem;
+}
+
+.button-start {
+    background-color: #10b981;
+    /* Green */
+}
+
+.button-start:hover {
+    background-color: #059669;
+}
+
+.button-pause {
+    background-color: #f59e0b;
+    /* Yellow */
+}
+
+.button-pause:hover {
+    background-color: #d97706;
+}
+
+.button-stop {
+    background-color: #ef4444;
+    /* Red */
+}
+
+.button-stop:hover {
+    background-color: #dc2626;
+}
+
+.button-secondary {
+    background-color: #6b7280;
+    /* Gray */
+    color: white;
+}
+
+.button-secondary:hover {
+    background-color: #4b5563;
+}
+
+.button-register {
+    background-color: #3b82f6;
+    /* Blue */
+    color: white;
+}
+
+.button-register:hover {
+    background-color: #2563eb;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    margin-bottom: 1rem;
+    color: #333;
+    /* Dark text for input */
+    width: 100%;
+    /* Full width within parent */
+    box-sizing: border-box;
+    /* Include padding in width */
+}
+
+.hidden {
+    display: none;
+}
+
+.history-list {
+    max-height: 150px;
+    /* Limit height for history list */
+    overflow-y: auto;
+    /* Add scrollbar if needed */
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.history-item {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
