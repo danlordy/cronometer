@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cronómetro con Usuarios y Historial</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <link href="style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -15,22 +14,26 @@
 
         <div id="loginSection">
             <h2 class="text-2xl mb-4">Iniciar Sesión</h2>
-            <input type="text" id="loginUsername" placeholder="Usuario">
-            <input type="password" id="loginPassword" placeholder="Contraseña">
-            <button id="loginButton" class="button button-start w-full">Entrar</button>
-            <button id="showRegisterButton" class="button button-secondary w-full mt-2">Registrarse</button>
-            <p id="loginError" class="text-red-500 mt-2 hidden">Usuario o contraseña incorrectos.</p>
+            <form id="loginForm">
+                <input type="text" id="loginUsername" placeholder="Usuario">
+                <input type="password" id="loginPassword" placeholder="Contraseña">
+                <button id="loginButton" class="button button-start w-full">Entrar</button>
+                <button id="showRegisterButton" class="button button-secondary w-full mt-2" type="button">Registrarse</button>
+                <p id="loginError" class="text-red-500 mt-2 hidden">Usuario o contraseña incorrectos.</p>
+            </form>
         </div>
 
         <div id="registerSection" class="hidden">
             <h2 class="text-2xl mb-4">Registrar Usuario</h2>
-            <input type="text" id="registerUsername" placeholder="Nuevo Usuario">
-            <input type="password" id="registerPassword" placeholder="Nueva Contraseña">
-            <button id="registerButton" class="button button-register w-full">Crear Usuario</button>
-            <button id="backToLoginButton" class="button button-secondary w-full mt-2">Volver a Iniciar Sesión</button>
-            <p id="registerError" class="text-red-500 mt-2 hidden">El usuario ya existe.</p>
-            <p id="registerSuccess" class="text-green-500 mt-2 hidden">Usuario creado con éxito. Por favor, inicia
-                sesión.</p>
+            <form id="registerForm">
+                <input type="text" id="registerUsername" placeholder="Nuevo Usuario">
+                <input type="password" id="registerPassword" placeholder="Nueva Contraseña">
+                <button id="registerButton" class="button button-register w-full">Crear Usuario</button>
+                <button id="backToLoginButton" class="button button-secondary w-full mt-2" type="button">Volver a Iniciar Sesión</button>
+                <p id="registerError" class="text-red-500 mt-2 hidden">El usuario ya existe.</p>
+                <p id="registerSuccess" class="text-green-500 mt-2 hidden">Usuario creado con éxito. Por favor, inicia
+                    sesión.</p>
+            </form>
         </div>
 
 

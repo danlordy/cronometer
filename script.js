@@ -418,9 +418,7 @@ function addSessionToHistory() {
     if (currentUser && currentSessionStartTime instanceof Date && elapsedTime > 0) {
         const sessionEndTime = new Date();
         const sessionDuration = sessionEndTime.getTime() - currentSessionStartTime.getTime();
-        // Recalculate cost based on the duration of this specific session
-        const sessionCost = (sessionDuration / 60000) * pricePerMinute;
-
+        // Recalcular costo basado en la duración de esta sesión específica
         const sessionCost = (sessionDuration / 60000) * pricePerMinute;
         const taskName = taskNameInput.value.trim();
 
@@ -462,17 +460,11 @@ function loadHistory() {
             const startTimeStr = session.startTime instanceof Date ? session.startTime.toLocaleString() : 'Fecha inválida';
             const endTimeStr = session.endTime instanceof Date ? session.endTime.toLocaleString() : 'Fecha inválida';
             const durationMinutes = (Number(session.duration) / 60000).toFixed(2); // Ensure duration is a number
-            const costStr = Number(session.cost).toFixed(2); // Ensure cost is a number
-
-            const historyItem = document.createElement('div');
-            historyItem.classList.add('history-item');
-            const currentUser = getCurrentUser(); 
             let symbol = '$';
             if (currentUser && currentUser.settings && currentUser.settings.currencySymbol) {
                 symbol = currentUser.settings.currencySymbol;
             }
             const costStr = Number(session.cost).toFixed(2);
-
             const historyItem = document.createElement('div');
             historyItem.classList.add('history-item');
             historyItem.innerHTML = `
@@ -480,7 +472,7 @@ function loadHistory() {
                         <p><strong>Fin:</strong> ${endTimeStr}</p>
                         <p><strong>Duración:</strong> ${durationMinutes} minutos</p>
                             <p><strong>Tarea:</strong> ${session.taskName || 'Sin Título'}</p>
-                        <p><strong>Costo:</strong> ${symbol}${costStr}</p>
+                            <p><strong>Costo:</strong> ${symbol}${costStr}</p>
                     `;
             historyListDiv.appendChild(historyItem);
         });
