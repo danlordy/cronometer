@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Cronómetro de Costo por Hora es una aplicación web simple diseñada para ayudar a freelancers y profesionales a registrar el tiempo trabajado en proyectos y calcular el costo asociado basado en una tarifa por hora configurable.",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danlordy/cronometer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danlordy/cronometer/issues"
+  },
+  "homepage": "https://github.com/danlordy/cronometer#readme",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  }
+}
